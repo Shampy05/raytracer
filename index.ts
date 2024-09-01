@@ -1,36 +1,42 @@
 import { EPSILON } from "./constants";
-
-interface Tuple {
-    x: number;
-    y: number;
-    z: number;
-    w: number;
-}
-
-interface Vector extends Tuple {}
-interface Point extends Tuple {}
+import { ITuple, IVector, IPoint, IColor } from "./types";
 
 class TupleOperations {
-    static create(x: number, y: number, z: number, w: number): Tuple {
+    static create(x: number, y: number, z: number, w: number): ITuple {
         return {x, y, z, w};
     }
 
-    static point(x: number, y: number, z: number): Point {
-        return this.create(x, y, z, 1) as Point;
+    static point(x: number, y: number, z: number): IPoint {
+        return this.create(x, y, z, 1) as IPoint;
     }
 
-    static vector(x: number, y: number, z: number): Vector {
-        return this.create(x, y, z, 0) as Vector;
+    static vector(x: number, y: number, z: number): IVector {
+        return this.create(x, y, z, 0) as IVector;
     }
 
-    static equals(a: Tuple, b: Tuple): boolean {
+    static color(red: number, green: number, blue: number, alpha: number): IColor {
+        const color = this.create(red, green, blue, alpha);
+        return {
+            ...color,
+            get red() { return this.x },
+            get green() { return this.y },
+            get blue() { return this.z },
+            get alpha() { return this.w },
+            set red(value: number) { this.x = value },
+            set green(value: number) { this.y = value },
+            set blue(value: number) { this.z = value },
+            set alpha(value: number) { this.w = value },
+        }
+    }
+
+    static equals(a: ITuple, b: ITuple): boolean {
         return Math.abs(a.x - b.x) < EPSILON &&
             Math.abs(a.y - b.y) < EPSILON &&
             Math.abs(a.z - b.z) < EPSILON &&
             Math.abs(a.w - b.w) < EPSILON;
     }
 
-    static add(a: Tuple, b: Tuple): Tuple {
+    static add(a: ITuple, b: ITuple): ITuple {
         return this.create(
             a.x + b.x,
             a.y + b.y,
@@ -39,7 +45,7 @@ class TupleOperations {
         );
     }
 
-    static subtract(a: Tuple, b: Tuple): Tuple {
+    static subtract(a: ITuple, b: ITuple): ITuple {
         return this.create(
             a.x - b.x,
             a.y - b.y,
@@ -48,11 +54,11 @@ class TupleOperations {
         );
     }
 
-    static negate(a: Tuple): Tuple {
+    static negate(a: ITuple): ITuple {
         return this.create(-a.x, -a.y, -a.z, -a.w)
     }
 
-    static multiply<T extends Tuple | number>(a: Tuple, b: T): Tuple {
+    static multiply<T extends ITuple | number>(a: ITuple, b: T): ITuple {
         if (typeof b === 'number') {
             return this.create(
                 a.x * b,
@@ -70,27 +76,27 @@ class TupleOperations {
         }
     }
 
-    static divide(a: Tuple, scalar: number): Tuple {
+    static divide(a: ITuple, scalar: number): ITuple {
         return this.multiply(a, 1 / scalar)
     }
 
-    static magnitude(a: Tuple): number {
+    static magnitude(a: ITuple): number {
         return Math.hypot(a.x, a.y, a.z, a.w)
     }
 
-    static normalize(a: Tuple): Tuple {
+    static normalize(a: ITuple): ITuple {
         const mag = this.magnitude(a)
         return this.divide(a, mag)
     }
 
-    static dot(a: Tuple, b: Tuple): number {
+    static dot(a: ITuple, b: ITuple): number {
         return a.x * b.x +
             a.y * b.y +
             a.z * b.z +
             a.w * b.w;
     }
 
-    static cross(a: Vector, b: Vector): Vector {
+    static cross(a: IVector, b: IVector): IVector {
         return this.vector(
             a.y*b.z - a.z*b.y,
             a.z*b.x - a.x*b.z,
@@ -113,4 +119,5 @@ export const Tuple = {
     normalize: TupleOperations.normalize.bind(TupleOperations),
     dot: TupleOperations.dot.bind(TupleOperations),
     cross: TupleOperations.cross.bind(TupleOperations),
+    color: TupleOperations.color.bind(TupleOperations),
 }

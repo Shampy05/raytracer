@@ -1,5 +1,5 @@
 import { Tuple } from '../index';
-const { divide, magnitude, multiply, negate, point, vector, equals, create, normalize, dot, cross } = Tuple;
+const { divide, magnitude, multiply, negate, point, vector, equals, create, normalize, dot, cross, color } = Tuple;
 
 describe('create a tuple', () => {
     test('function should return object with x, y, z, w values', () => {
@@ -81,5 +81,17 @@ describe('cross product of 2 vectors', () => {
     })
     test('cross product of b and a', () => {
         expect(cross(vector(2, 3, 4), vector(1, 2, 3))).toStrictEqual(vector(1, -2, 1))
+    })
+})
+
+describe('Color', () => {
+    describe('creation and property access', () => {
+        it('should create a color with correct RGBA values', () => {
+            const color = Tuple.color(0.9, 0.6, 0.1, 1);
+            expect(color.x).toBeCloseTo(0.9);
+            expect(color.y).toBeCloseTo(0.6);
+            expect(color.z).toBeCloseTo(0.1);
+            expect(color.w).toBeCloseTo(1);
+        })
     })
 })
